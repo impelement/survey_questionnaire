@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_my_home_menu_sale" name="Portal layout: Survey" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- Conditionally add the breadcrumb item for Stored Pallets -->
+            <t t-if="'/my_survey' in request.httprequest.path">
+                <li class="breadcrumb-item">
+                    <a>Survey</a>
+                </li>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home" name="Surveys" customize_show="True" inherit_id="portal.portal_my_home" priority="101">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-2" id="portal_common_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/questionnaires/static/src/img/pallet.svg'"/>
+                    <t t-set="title">Survey</t>
+                    <t t-set="text">View all your survey</t>
+                    <t t-set="url" t-value="'/my_survey'"/>
+                    <t t-set="placeholder_count" t-value="'survey_count'"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_survey_user_input" name="Survey User Inputs">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Survey User Inputs</t>
+                </t>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Survey</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Review Status</th>
+                            <th>Partner</th>
+                            <th>Email</th>
+                            <th>Survey URl</th>
+                            <th>Helper Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="surveys" t-as="user_input">
+                            <tr>
+                                <td><t t-esc="user_input.survey_id.display_name"/></td>
+                                <td><t t-esc="user_input.start_datetime"/></td>
+                                <td><t t-esc="user_input.end_datetime"/></td>
+                                <td><t t-esc="user_input.review_status"/></td>
+                                <td><t t-esc="user_input.partner_id.name"/></td>
+                                <td><t t-esc="user_input.email"/></td>
+                                <td>  <a t-attf-href="{{ user_input.survey_start_url }}" target="_blank">Survey URL</a></td>
+                                <td>
+                                    <ul>
+                                        <t t-foreach="user_input.user_input_line_ids" t-as="line">
+                                            <li>
+                                                Q:<t t-esc="line.question_id.title"/>
+                                            </li>
+                                            <li>
+                                                <t t-esc="line.comment"/>
+                                            </li>
+
+                                        </t>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+        </template>
+</odoo>

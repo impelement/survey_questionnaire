@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_issue_module,issue.issue,model_issue_activity,,1,1,1,1
+access_parti_module,issue.parti,model_survey_participants,,1,1,1,1
+access_surveyuser_module,issue.parti,model_survey_user_input,,1,1,1,1
+access_mile_detail,milestone.mile,model_mile_details,,1,1,1,1
+access_proj_survey,pro.survey,model_proj_survey,,1,1,1,1
+access_proj_task,pro.task,model_project_task,,1,1,1,1
+

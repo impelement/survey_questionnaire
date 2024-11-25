@@ -1,0 +1,311 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="view_project_form_inherit" model="ir.ui.view">
+            <field name="name">project.form.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+
+                <div name="button_box" position="inside">
+                    <button class="oe_stat_button" string="Questionnaires" type="object" name="get_questionnaire"
+                        icon="fa-question-circle"/>
+
+                </div>
+
+                <xpath expr="//page[@name='description']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//notebook" position="before">
+                    <group>
+                        <field name="description" />
+                    </group>
+                </xpath>
+
+                <xpath expr="//header" position="inside">
+                    <button type="object" name="action_send_survey"
+                            string="Send Survey" class="oe_stat_button" icon="fa-paper-plane"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="view_survey_wizard_form_inherit" model="ir.ui.view">
+            <field name="name">survey.invite.form.inherit</field>
+            <field name="model">survey.invite</field>
+            <field name="inherit_id" ref="survey.survey_invite_view_form"/>
+            <field name="arch" type="xml">
+                <field name="subject" position="replace"/>
+                <field name="emails" position="replace"/>
+                <field name="send_email" invisible="1"/>
+                <!-- <field name="partner_ids" string="Collaborators"/> -->
+
+                <xpath expr="//field[@name='partner_ids']" position="after">
+                    <field name="survey_ids" widget="many2many_tags"/>
+                    <field name="survey_id" required="0" invisible="1"/>
+                    <field name="survey_start_url" invisible="1"/>
+
+                    <field name="project_id"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_survey_session_form_inherit" model="ir.ui.view">
+            <field name="name">survey.survey.form.inherit</field>
+            <field name="model">survey.survey</field>
+            <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+            <field name="arch" type="xml">
+                    <xpath expr="//notebook" position="inside">
+                        <page string="Session Details" name="details">
+                            <group>
+                                <group>
+                                    <field name="participant_ids" string="Participants" widget="many2many_tags"/>
+                                    <field name="last_question_id" string="Last Question"/>
+                                    <field name="status" string="Status"/>
+                                </group>
+                            </group>
+                        </page>
+                    </xpath>
+            </field>
+        </record>
+
+        <record id="view_survey_us_form_inherit" model="ir.ui.view">
+            <field name="name">survey.user.form.inherit</field>
+            <field name="model">survey.user_input</field>
+            <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="after">
+                    <field name="review_status"/>
+                    <field name="helper_ids" widget="many2many_tags"/>
+                </xpath>
+                <xpath expr="/form/header" position="inside">
+                    <button name="makeincorrect" string="Mark as Incorrect" type="object" class="oe_highlight" groups="questionnaires.group_helper"/>
+                    <button name="makeverified" string="Mark as Verified" type="object" class="oe_highlight" groups="questionnaires.group_helper"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="surveyuser_input_list_view" model="ir.ui.view">
+            <field name="name">User Input List View</field>
+            <field name="model">survey.user_input.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="question_id"/>
+                    <field name="create_uid"/>
+                    <field name="suggested_answer_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="userinput_form_view" model="ir.ui.view">
+            <field name="name">User Input Form View</field>
+            <field name="model">survey.user_input.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="question_id"/>
+                            <field name="create_uid"/>
+                            <field name="suggested_answer_id"/>
+                            <field name="issue_activities" string="Issues" widget="many2many_tags"/>
+                            <field name="comment"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_taskes_order_filter" model="ir.ui.view">
+            <field name="name">task.order.list.select</field>
+            <field name="model">project.task</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Search Task">
+                    <field name="name" string="Task"
+                        filter_domain="[('name', '=', 'task_one')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="task_search_action" model="ir.actions.act_window">
+            <field name="name">Task Search</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.task</field>
+            <field name="view_mode">search,tree,form</field>
+        </record>
+
+
+        <menuitem id="part_menu"  action="task_search_action"
+                name="Tasks" sequence="105"/>
+
+
+        <record id="userinput_action" model="ir.actions.act_window">
+            <field name="name">User Input</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">survey.user_input.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.menu" id="survey.menu_surveys">
+            <field name="name">Questionnaire</field>
+        </record>
+
+        <record model="ir.ui.menu" id="survey.menu_survey_form">
+            <field name="name">Questionnaires</field>
+        </record>
+
+        <menuitem id="menu_questionnaire" parent="survey.menu_surveys"
+                name="Questionnaire" sequence="103"/>
+        <menuitem id="user_input_line_menu" parent="menu_questionnaire" action="userinput_action"
+                name="Manage User Input" sequence="103"/>
+
+
+
+        <record model="ir.ui.menu" id="project.menu_main_pm">
+            <field name="name">Application</field>
+        </record>
+        <record model="ir.ui.menu" id="project.menu_projects">
+            <field name="name">Applications</field>
+        </record>
+        <record model="ir.ui.menu" id="project.menu_projects_config_group_stage">
+            <field name="name">Applications</field>
+        </record>
+        <record model="ir.ui.menu" id="project.menu_projects_config">
+            <field name="name">Applications</field>
+        </record> 
+
+        <record model="ir.ui.menu" id="project.menu_project_config_project_stage">
+            <field name="name">Application Stages</field>
+        </record>
+
+        <record id="survey_issue" model="ir.ui.view">
+            <field name="name">Issue List View</field>
+            <field name="model">issue.activity</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="issue_form_view" model="ir.ui.view">
+            <field name="name">Issue Form View</field>
+            <field name="model">issue.activity</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="issue_action" model="ir.actions.act_window">
+            <field name="name">Issues</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">issue.activity</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="issue_menu" parent="menu_questionnaire" action="issue_action"
+                name="Issues" sequence="104"/>
+
+
+        <record id="survey_particiapnt" model="ir.ui.view">
+            <field name="name">Participant List View</field>
+            <field name="model">survey.participants</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="participant"/>
+                    <field name="helper_ids"/>
+
+                </tree>
+            </field>
+        </record>
+        <record id="participants_form_view" model="ir.ui.view">
+            <field name="name">Participants Form View</field>
+            <field name="model">survey.participants</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="participant"/>
+                            <field name="helper_ids" widget="many2many_tags"/>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="paricipants_action" model="ir.actions.act_window">
+            <field name="name">Participants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">survey.participants</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="participants_menu" parent="menu_questionnaire" action="paricipants_action"
+                name="Participants" sequence="105"/>
+ 
+        <record id="view_project_project_form" model="ir.ui.view">
+            <field name="name">project.project.form.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='description']" position="after">
+                    <br/>
+                    <label for="task_ids">Tasks</label>
+                    <br/>
+                    <group>
+                        <field name="task_ids" widget="section_and_note_one2many" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="name"  nolabel="1"/>
+                                <field name="mile_id"  nolabel="1"/>       
+                            </tree>
+                        </field>
+                    </group>
+
+                </xpath>
+                
+            </field>
+        </record>
+
+        <record id="view_projtask_form_inherit" model="ir.ui.view">
+            <field name="name">project.task.form.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_ids']" position="after">
+                    <field name="mile_id" string="Milestone"/>
+
+                </xpath>
+            </field>
+        </record>
+
+        <record id="project.open_view_project_all" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="domain">[]</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="project.view_project"/>
+            <field name="search_view_id" ref="project.view_project_project_filter"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No projects found. Let's create one!
+                </p>
+                <p>
+                    Create projects to organize your tasks. Define a different workflow for each project.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+
+
+
+
+
+
+
